@@ -1,0 +1,16 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ],
+  "compilerOptions": {
+    "types": ["node","@/*", "lodash-es"],
+    //配置@路径
+    "baseUrl": ".",
+    "paths": {
+       "@/*": ["src/*"]
+    },
+  }
+
+}
