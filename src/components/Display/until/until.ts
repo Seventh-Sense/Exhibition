@@ -107,6 +107,8 @@ export const dataEncap = (data: Presentation) => {
     "," +
     data.ai.area +
     "," +
+    data.tradition.setTemp +
+    "," +
     data.ai.people +
     "," +
     handlePrefer(data.ai.preference) +

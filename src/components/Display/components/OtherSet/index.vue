@@ -40,8 +40,8 @@ import { inject, onMounted, ref } from "vue";
 import { Methods, MY_FUNCTIONS_KEY } from "../../until/until";
 import { sendParams } from "../../../../utils/http";
 
-const value = ref(25);
-
+const value = ref<any>(25);
+  let interval: number;
 const isShow = ref(true);
 
 const myFunctions = inject(MY_FUNCTIONS_KEY);
@@ -55,7 +55,8 @@ const getValue = () => {
   })
     .then((res: any) => {
       if (res.status === "OK" && res.result.status === "ok") {
-        value.value = res.result.value;
+        value.value = parseFloat(res.result.value).toFixed(1);
+        console.log("get_aitemp", res.result.value);
       }
     })
     .catch((e) => {
@@ -67,10 +68,11 @@ const onClick = () => {
   if (isShow.value) {
     myFunctions?.submit();
 
-    setTimeout(() => {
+    interval = window.setInterval(() => {
       getValue();
-    }, 3000);
+    }, 5000);
   } else {
+    window.clearInterval(interval)
     myFunctions?.reset();
   }
 
@@ -79,6 +81,8 @@ const onClick = () => {
 
 const onReset = () => {
   myFunctions?.reset();
+  window.clearInterval(interval)
+  isShow.value = true;
 };
 </script>
 

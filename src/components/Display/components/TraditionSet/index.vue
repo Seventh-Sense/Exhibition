@@ -1,12 +1,12 @@
 <template>
   <div class="card">
-    <div class="card-title">传统空调面板</div>
+    <div class="card-title">空调面板</div>
     <n-grid x-gap="14" :cols="12">
       <n-gi :span="4">
         <div class="card-temp">
           <div>
             <div>
-              <span class="card-temp-number">23</span>
+              <span class="card-temp-number">{{value}}</span>
               <span class="card-temp-unit">℃</span>
             </div>
             <div class="card-bottom-title">室内温度</div>
@@ -122,7 +122,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
+import { sendParams } from "../../../../utils/http";
 
 const emit = defineEmits(["modMode"]);
 const props = defineProps({
@@ -132,6 +133,10 @@ const props = defineProps({
   },
 });
 
+const value = ref<any>(23.0);
+
+let interval: number;
+
 const marks = {
   0: "0",
   1: "1",
@@ -139,12 +144,28 @@ const marks = {
   3: "3",
 };
 
-const mark = {
-  0: "0",
-  1: "1",
-  2: "2",
-  3: "3",
-  4: "4",
+onMounted(() => {
+  interval = window.setInterval(() => {
+    getValue();
+  }, 10000);
+});
+
+const getValue = () => {
+  sendParams({
+    device_id: "aidevice001",
+    params: {
+      cmd: "get_curtemp",
+    },
+  })
+    .then((res: any) => {
+      if (res.status === "OK" && res.result.status === "ok") {
+        value.value = parseFloat(res.result.value).toFixed(1);
+        console.log("get_curtemp", res.result.value);
+      }
+    })
+    .catch((e) => {
+      console.log(e);
+    });
 };
 
 const onClick = (index: number) => {
