@@ -7,6 +7,11 @@ const routes = [
     name: 'Display',
     component:  () => import('@/components/Display/index.vue')
   },
+  {
+    path: '/sensor',
+    name: 'Sensor',
+    component:  () => import('@/components/Sensor/index.vue')
+  },
   // 添加更多路由...
 ];
 

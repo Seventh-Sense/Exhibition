@@ -151,10 +151,9 @@ onMounted(() => {
 });
 
 const getValue = () => {
-  sendParams({
-    device_id: "aidevice001",
+  sendParams("aidevice001", {
+    function: "get_curtemp",
     params: {
-      cmd: "get_curtemp",
     },
   })
     .then((res: any) => {

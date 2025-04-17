@@ -8,7 +8,7 @@
             <span class="card-top-value">{{ value }}</span>
             <span class="card-top-unit">℃</span>
           </div>
-          <div class="card-top-text">设定温度</div>
+          <div class="card-top-text">预测平均温度</div>
         </div>
       </div>
     </div>
@@ -47,10 +47,9 @@ const isShow = ref(true);
 const myFunctions = inject(MY_FUNCTIONS_KEY);
 
 const getValue = () => {
-  sendParams({
-    device_id: "aidevice001",
+  sendParams("aidevice001", {
+    function: "get_aitemp",
     params: {
-      cmd: "get_aitemp",
     },
   })
     .then((res: any) => {

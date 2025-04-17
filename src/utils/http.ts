@@ -22,9 +22,9 @@ export const getLoginInfo = () => {
 }
 
 
-export const sendParams = async (data: any) => {
+export const sendParams = async (id: string, data: any) => {
   try {
-    const response = await post(`/device/request`, data)
+    const response = await post(`/device/request?device_id=${id}`, data)
     
     return response
   } catch (error) {

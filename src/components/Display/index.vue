@@ -111,11 +111,9 @@ const submit = () => {
   window.clearInterval(interval);
   startTime.value = new Date().getTime();
 
-  sendParams({
-    device_id: "aidevice001",
-    params: {
-      cmd: "stop",
-    },
+  sendParams("aidevice001", {
+    function: "stop",
+    params: {},
   })
     .then((res: any) => {
       console.log(res);
@@ -129,10 +127,10 @@ const submit = () => {
 };
 
 const sendInitInfo = () => {
-  sendParams({
-    device_id: "aidevice001",
+  sendParams("aidevice001", {
+    function: "start",
     params: {
-      cmd: dataEncap(PresentData),
+      args: dataEncap(PresentData),
     },
   })
     .then((res: any) => {
@@ -190,11 +188,9 @@ const reset = () => {
     ai_energy: [],
   };
 
-  sendParams({
-    device_id: "aidevice001",
-    params: {
-      cmd: "stop",
-    },
+  sendParams("aidevice001", {
+    function: "stop",
+    params: {},
   })
     .then((res: any) => {
       if (res.status === "OK") {

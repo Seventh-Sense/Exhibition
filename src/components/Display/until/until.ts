@@ -100,7 +100,6 @@ const handleMode = (arr: Array<number>) => {
 //数据封装
 export const dataEncap = (data: Presentation) => {
   return (
-    "start," +
     data.ai.ominTemp +
     "," +
     data.ai.omaxTemp +
