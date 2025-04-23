@@ -43,6 +43,8 @@
             v-model:value="data.ominTemp"
             button-placement="both"
             style="width: 65%"
+            min="0"
+            max="20"
           >
             <template #suffix>℃</template>
           </n-input-number>
@@ -53,6 +55,8 @@
             v-model:value="data.omaxTemp"
             button-placement="both"
             style="width: 65%"
+            min="10"
+            max="30"
           >
             <template #suffix>℃</template>
           </n-input-number>

@@ -21,6 +21,8 @@
             v-model:value="data.setTemp"
             button-placement="both"
             style="width: 65%"
+            min="16"
+            max="30"
           >
             <template #suffix>℃</template>
           </n-input-number>
@@ -153,7 +155,7 @@ onMounted(() => {
 const getValue = () => {
   sendParams("aidevice001", {
     function: "get_curtemp",
-    params: {
+    parms: {
     },
   })
     .then((res: any) => {

@@ -49,7 +49,7 @@ const myFunctions = inject(MY_FUNCTIONS_KEY);
 const getValue = () => {
   sendParams("aidevice001", {
     function: "get_aitemp",
-    params: {
+    parms: {
     },
   })
     .then((res: any) => {

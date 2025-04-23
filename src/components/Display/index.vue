@@ -1,7 +1,9 @@
 <template>
   <div class="page" style="color: white">
     <div class="page-header">
-      <div class="page-header-title">智能温控器</div>
+      <div class="page-header-title" @click="onclick" style="cursor: pointer;">
+        <svg-icon name="lubanxlyzkdy" :size="400"></svg-icon>
+      </div>
     </div>
     <div class="page-container">
       <n-grid x-gap="14" :cols="12" style="margin-bottom: 14px">
@@ -106,6 +108,9 @@ const modPrefer = (index: number) => {
   }
 };
 
+const onclick = () => {
+  window.location.reload();
+};
 const submit = () => {
   console.log(PresentData);
   window.clearInterval(interval);
@@ -113,7 +118,7 @@ const submit = () => {
 
   sendParams("aidevice001", {
     function: "stop",
-    params: {},
+    parms: {},
   })
     .then((res: any) => {
       console.log(res);
@@ -129,7 +134,7 @@ const submit = () => {
 const sendInitInfo = () => {
   sendParams("aidevice001", {
     function: "start",
-    params: {
+    parms: {
       args: dataEncap(PresentData),
     },
   })
@@ -190,7 +195,7 @@ const reset = () => {
 
   sendParams("aidevice001", {
     function: "stop",
-    params: {},
+    parms: {},
   })
     .then((res: any) => {
       if (res.status === "OK") {
