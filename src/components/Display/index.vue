@@ -1,14 +1,18 @@
 <template>
   <div class="page" style="color: white">
     <div class="page-header">
-      <div class="page-header-title" @click="onclick" style="cursor: pointer;">
+      <div class="page-header-title" @click="onclick" style="cursor: pointer">
         <svg-icon name="lubanxlyzkdy" :size="400"></svg-icon>
       </div>
     </div>
     <div class="page-container">
       <n-grid x-gap="14" :cols="12" style="margin-bottom: 14px">
         <n-gi :span="4" class="page-container-card filter-height">
-          <TraditionSet :data="PresentData.tradition" @modMode="modMode" />
+          <TraditionSet
+            :data="PresentData.tradition"
+            @modMode="modMode"
+            @setIndoorTemp="setIndoorTemp"
+          />
         </n-gi>
         <n-gi :span="5" class="page-container-card filter-height">
           <AISet
@@ -18,7 +22,7 @@
           />
         </n-gi>
         <n-gi :span="3" class="page-container-card filter-height">
-          <OtherSet />
+          <OtherSet :tradition="PresentData.tradition" :indoorTemp="indoorTemp"/>
         </n-gi>
       </n-grid>
 
@@ -37,7 +41,7 @@
 </template>
 
 <script setup lang="ts">
-import { provide, reactive, ref } from "vue";
+import { onMounted, provide, reactive, ref } from "vue";
 import { TemperatureChart } from "./components/TemperatureChart";
 import { EnergyChart } from "./components/EnergyChart";
 import {
@@ -61,6 +65,12 @@ const startTime = ref(0);
 
 let interval: number;
 
+const indoorTemp = ref('0');
+
+const setIndoorTemp = (data: any) => {
+  indoorTemp.value = data;
+  console.log(typeof indoorTemp.value)
+};
 const TempData = ref({
   regular_temp: [],
   ai_temp: [],

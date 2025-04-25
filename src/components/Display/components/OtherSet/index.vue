@@ -39,9 +39,21 @@
 import { inject, onMounted, ref } from "vue";
 import { Methods, MY_FUNCTIONS_KEY } from "../../until/until";
 import { sendParams } from "../../../../utils/http";
+import { message } from "ant-design-vue";
+
+const props = defineProps({
+  tradition: {
+    type: Object,
+    required: true,
+  },
+  indoorTemp: {
+    type: String,
+    required: true,
+  }
+});
 
 const value = ref<any>(25);
-  let interval: number;
+let interval: number;
 const isShow = ref(true);
 
 const myFunctions = inject(MY_FUNCTIONS_KEY);
@@ -49,8 +61,7 @@ const myFunctions = inject(MY_FUNCTIONS_KEY);
 const getValue = () => {
   sendParams("aidevice001", {
     function: "get_aitemp",
-    parms: {
-    },
+    parms: {},
   })
     .then((res: any) => {
       if (res.status === "OK" && res.result.status === "ok") {
@@ -65,23 +76,50 @@ const getValue = () => {
 
 const onClick = () => {
   if (isShow.value) {
-    myFunctions?.submit();
+    if (dataCheck()) {
+      myFunctions?.submit();
 
-    interval = window.setInterval(() => {
-      getValue();
-    }, 5000);
+      interval = window.setInterval(() => {
+        getValue();
+      }, 5000);
+
+      isShow.value = false;
+    } else {
+      isShow.value = true;
+    }
   } else {
-    window.clearInterval(interval)
+    window.clearInterval(interval);
     myFunctions?.reset();
+
+    isShow.value = true;
+  }
+};
+
+const dataCheck = () => {
+  let flag = true;
+
+  console.log(props.tradition.setTemp, props.indoorTemp)
+  if (props.tradition.mode[1] === 1) {
+    if (props.tradition.setTemp < parseFloat(props.indoorTemp)) {
+      message.error("当前制热模式下，请检查设定温度！");
+      flag = false;
+    }
   }
 
-  isShow.value = !isShow.value;
+  if (props.tradition.mode[2] === 1) {
+    if (props.tradition.setTemp > parseFloat(props.indoorTemp)) {
+      message.error("当前制冷模式下，请检查设定温度！");
+      flag = false;
+    }
+  }
+
+  return flag;
 };
 
 const onReset = () => {
-  myFunctions?.reset();
-  window.clearInterval(interval)
+  window.clearInterval(interval);
   isShow.value = true;
+  myFunctions?.reset();
 };
 </script>
 
@@ -165,6 +203,7 @@ const onReset = () => {
     display: flex;
     justify-content: center;
     align-items: center;
+    cursor: pointer;
   }
 }
 

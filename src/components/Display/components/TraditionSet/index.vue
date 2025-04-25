@@ -124,16 +124,16 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted, provide, ref } from "vue";
 import { sendParams } from "../../../../utils/http";
 
-const emit = defineEmits(["modMode"]);
+const emit = defineEmits(["modMode", "setIndoorTemp"]);
 const props = defineProps({
   data: {
     type: Object,
     required: true,
   },
-});
+})
 
 const value = ref<any>(23.0);
 
@@ -160,7 +160,8 @@ const getValue = () => {
   })
     .then((res: any) => {
       if (res.status === "OK" && res.result.status === "ok") {
-        value.value = parseFloat(res.result.value).toFixed(1);
+        value.value = parseFloat(res.result.value).toFixed(2);
+        emit("setIndoorTemp", value.value)
         console.log("get_curtemp", res.result.value);
       }
     })
@@ -172,6 +173,8 @@ const getValue = () => {
 const onClick = (index: number) => {
   emit("modMode", index);
 };
+
+
 </script>
 
 <style lang="less" scoped>
