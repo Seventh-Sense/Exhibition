@@ -6,7 +6,7 @@
         <div class="card-temp">
           <div>
             <div>
-              <span class="card-temp-number">{{value}}</span>
+              <span class="card-temp-number">{{parseFloat(value).toFixed(1)}}</span>
               <span class="card-temp-unit">℃</span>
             </div>
             <div class="card-bottom-title">室内温度</div>
@@ -129,13 +129,17 @@ import { sendParams } from "../../../../utils/http";
 
 const emit = defineEmits(["modMode", "setIndoorTemp"]);
 const props = defineProps({
+  device_id: {
+    type: String,
+    required: true,
+  },
   data: {
     type: Object,
     required: true,
   },
 })
 
-const value = ref<any>(23.0);
+const value = ref<any>(20);
 
 let interval: number;
 
@@ -153,16 +157,16 @@ onMounted(() => {
 });
 
 const getValue = () => {
-  sendParams("aidevice001", {
+  sendParams(props.device_id, {
     function: "get_curtemp",
     parms: {
     },
   })
     .then((res: any) => {
-      if (res.status === "OK" && res.result.status === "ok") {
-        value.value = parseFloat(res.result.value).toFixed(2);
+      if (res.status === "OK" && res.data.status === "OK") {
+        value.value = parseFloat(res.data.value).toFixed(1);
         emit("setIndoorTemp", value.value)
-        console.log("get_curtemp", res.result.value);
+        console.log("get_curtemp", res.data.value);
       }
     })
     .catch((e) => {

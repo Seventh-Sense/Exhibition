@@ -9,6 +9,7 @@
       <n-grid x-gap="14" :cols="12" style="margin-bottom: 14px">
         <n-gi :span="4" class="page-container-card filter-height">
           <TraditionSet
+            :device_id="device_id"
             :data="PresentData.tradition"
             @modMode="modMode"
             @setIndoorTemp="setIndoorTemp"
@@ -22,7 +23,11 @@
           />
         </n-gi>
         <n-gi :span="3" class="page-container-card filter-height">
-          <OtherSet :tradition="PresentData.tradition" :indoorTemp="indoorTemp"/>
+          <OtherSet
+            :device_id="device_id"
+            :tradition="PresentData.tradition"
+            :indoorTemp="indoorTemp"
+          />
         </n-gi>
       </n-grid>
 
@@ -51,13 +56,24 @@ import {
   PresentationData,
   inputDataEncap,
   dataEncap,
+  deviceData,
+  metricOne,
+  metricTwo,
 } from "./until/until";
 import { TraditionSet } from "./components/TraditionSet";
 import { AISet } from "./components/AISet";
 import { OtherSet } from "./components/OtherSet";
 import { cloneDeep } from "lodash-es";
 import { message } from "ant-design-vue";
-import { readChartData, sendParams } from "../../utils/http";
+import {
+  readChartData,
+  sendParams,
+  createDevice,
+  createMetric,
+  getDevices,
+  getMetric,
+  delMetric,
+} from "../../utils/http";
 
 const PresentData = reactive<Presentation>(cloneDeep(PresentationData));
 
@@ -65,11 +81,11 @@ const startTime = ref(0);
 
 let interval: number;
 
-const indoorTemp = ref('0');
+const indoorTemp = ref("0");
 
 const setIndoorTemp = (data: any) => {
   indoorTemp.value = data;
-  console.log(typeof indoorTemp.value)
+  console.log(typeof indoorTemp.value);
 };
 const TempData = ref({
   regular_temp: [],
@@ -118,21 +134,105 @@ const modPrefer = (index: number) => {
   }
 };
 
+const device_id = ref("");
+const tmpe_id = ref("");
+const ener_id = ref("");
+
+onMounted(() => {
+  getDevices()
+    .then((res) => {
+      if (res.status === "OK") {
+        if (res.data.length === 0) {
+          createDevices();
+        } else if (res.data.length === 1) {
+          device_id.value = res.data[0].id;
+        }
+      }
+    })
+    .catch((e: any) => {
+      console.error("get device error:", e);
+    })
+    .finally(() => {
+      getMetrics();
+    });
+});
+
+const createDevices = () => {
+  createDevice(deviceData)
+    .then((res: any) => {
+      console.log("create device success", res);
+      if (res.status === "OK") {
+        device_id.value = res.data.id;
+        creatMetrics(metricOne(res.data.id));
+        creatMetrics(metricTwo(res.data.id));
+      }
+    })
+    .catch((e: any) => {
+      console.error("create device error:", e);
+    });
+};
+
+const creatMetrics = (data: any) => {
+  createMetric(data)
+    .then((res) => {
+      console.log(res);
+    })
+    .catch((e: any) => {
+      console.error("create device error:", e);
+    });
+};
+
+const getMetrics = () => {
+  getMetric()
+    .then((res) => {
+      if (res.status === "OK") {
+        if (res.data.length === 2) {
+          res.data.forEach((item: any) => {
+            if (item.uid === "temperature") {
+              tmpe_id.value = item.id;
+            }
+
+            if (item.uid === "energy") {
+              ener_id.value = item.id;
+            }
+          });
+        }
+      }
+    })
+    .catch((e: any) => {
+      console.error("create device error:", e);
+    });
+};
+
+const deleteData = (id: string) => {
+  delMetric(id)
+    .then((res) => {
+      console.log(res);
+    })
+    .catch((e: any) => {
+      console.error("delMetric error:", e);
+    });
+};
+
 const onclick = () => {
   window.location.reload();
 };
 const submit = () => {
   console.log(PresentData);
+
+  deleteData(tmpe_id.value)
+  deleteData(ener_id.value)
+
   window.clearInterval(interval);
   startTime.value = new Date().getTime();
 
-  sendParams("aidevice001", {
+  sendParams(device_id.value, {
     function: "stop",
     parms: {},
   })
     .then((res: any) => {
       console.log(res);
-      if (res.status === "OK") {
+      if (res.status === "OK" && res.data.status === "OK") {
         sendInitInfo();
       }
     })
@@ -142,7 +242,7 @@ const submit = () => {
 };
 
 const sendInitInfo = () => {
-  sendParams("aidevice001", {
+  sendParams(device_id.value, {
     function: "start",
     parms: {
       args: dataEncap(PresentData),
@@ -156,6 +256,8 @@ const sendInitInfo = () => {
         interval = window.setInterval(() => {
           readData();
         }, 5000);
+      } else {
+        message.error("模拟失败！");
       }
     })
     .catch((e: any) => {
@@ -165,11 +267,13 @@ const sendInitInfo = () => {
 };
 
 const readData = () => {
-  readChartData(inputDataEncap(startTime.value))
+  readChartData()
     .then((res: any) => {
       //console.log(res)
       if (res.status === "OK") {
-        let result = ParseData(res.points);
+        let result = ParseData(res.data, tmpe_id.value, ener_id.value);
+
+        console.log(result);
         TempData.value = {
           regular_temp: result.regular_temp,
           ai_temp: result.ai_temp,
@@ -203,7 +307,7 @@ const reset = () => {
     ai_energy: [],
   };
 
-  sendParams("aidevice001", {
+  sendParams(device_id.value, {
     function: "stop",
     parms: {},
   })

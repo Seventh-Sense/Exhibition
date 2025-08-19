@@ -62,14 +62,14 @@ export const PresentationData = {
     power: 2500,
   },
   ai: {
-    people: 2,
+    people: 1,
     humidity: 25,
     area: 25,
     ominTemp: 10,
     omaxTemp: 22,
     weather: [1, 0, 0, 0],
     preference: [0, 1, 0],
-  }
+  },
 };
 
 const handlePrefer = (arr: Array<number>) => {
@@ -112,7 +112,7 @@ export const dataEncap = (data: Presentation) => {
     "," +
     handlePrefer(data.ai.preference) +
     "," +
-    data.tradition.power / 1000 + 
+    data.tradition.power / 1000 +
     "," +
     handleMode(data.tradition.mode) +
     "," +
@@ -141,7 +141,7 @@ export const inputDataEncap = (start_time: any) => {
   ];
 };
 
-export const ParseData = (data: Array<any>) => {
+export const ParseData = (data: Array<any>, tmpe_id: any, ener_id: any) => {
   let result: any = {
     regular_temp: [],
     ai_temp: [],
@@ -152,24 +152,20 @@ export const ParseData = (data: Array<any>) => {
   const metrics = ["temperature", "energy"] as const;
 
   data.forEach((item: any) => {
-    if (item.metric_id === "temperature") {
-      item.points.forEach((point: any) => {
-        let timestamp = point.timestamp;
-        let regular_temp = point.value.split(",")[0];
-        let ai_temp = point.value.split(",")[1];
-        result.regular_temp.push([timestamp, parseFloat(regular_temp)]);
-        result.ai_temp.push([timestamp, parseFloat(ai_temp)]);
-      });
+    if (item.metric_id === tmpe_id) {
+      let timestamp = item.timestamp;
+      let regular_temp = item.value.split(",")[0];
+      let ai_temp = item.value.split(",")[1];
+      result.regular_temp.push([timestamp, parseFloat(regular_temp)]);
+      result.ai_temp.push([timestamp, parseFloat(ai_temp)]);
     }
 
-    if (item.metric_id === "energy") {
-      item.points.forEach((point: any) => {
-        let timestamp = point.timestamp;
-        let regular_energy = point.value.split(",")[0];
-        let ai_energy = point.value.split(",")[1];
-        result.regular_energy.push([timestamp, parseFloat(regular_energy)]);
-        result.ai_energy.push([timestamp, parseFloat(ai_energy)]);
-      });
+    if (item.metric_id === ener_id) {
+      let timestamp = item.timestamp;
+      let regular_energy = item.value.split(",")[0];
+      let ai_energy = item.value.split(",")[1];
+      result.regular_energy.push([timestamp, parseFloat(regular_energy)]);
+      result.ai_energy.push([timestamp, parseFloat(ai_energy)]);
     }
   });
 
@@ -220,3 +216,37 @@ export const mergeArrays = (arr1: any, arr2: any) => {
 
 export const newA = mergeArrays(x, y1);
 export const newB = mergeArrays(x, y2);
+
+export const deviceData = {
+  uid: "aicontroller",
+  name: "aicontroller",
+  address: "127.0.0.1",
+  protocol: "udp",
+  enabled: true,
+  status: "",
+  property: { host: "127.0.0.1", port: 12345 },
+  tags: "",
+  description: "",
+};
+
+export const metricOne = (id: any) => {
+  return {
+    uid: "temperature",
+    name: "temperature",
+    property: { function: "get_temp" },
+    tags: "",
+    description: "",
+    device_id: id,
+  };
+};
+
+export const metricTwo = (id: any) => {
+  return {
+    uid: "energy",
+    name: "energy",
+    property: { function: "get_energy" },
+    tags: "",
+    description: "",
+    device_id: id,
+  };
+};

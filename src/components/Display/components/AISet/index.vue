@@ -9,6 +9,7 @@
             v-model:value="data.people"
             button-placement="both"
             style="width: 65%"
+            min="0"
           >
             <template #suffix>人</template>
           </n-input-number>
@@ -20,6 +21,7 @@
             v-model:value="data.area"
             button-placement="both"
             style="width: 65%"
+            min="0"
           >
             <template #suffix>m²</template>
           </n-input-number>
@@ -30,6 +32,7 @@
             v-model:value="data.humidity"
             button-placement="both"
             style="width: 65%"
+            min="0"
           >
             <template #suffix>%RH</template>
           </n-input-number>

@@ -42,6 +42,10 @@ import { sendParams } from "../../../../utils/http";
 import { message } from "ant-design-vue";
 
 const props = defineProps({
+  device_id: {
+    type: String,
+    required: true,
+  },
   tradition: {
     type: Object,
     required: true,
@@ -59,14 +63,14 @@ const isShow = ref(true);
 const myFunctions = inject(MY_FUNCTIONS_KEY);
 
 const getValue = () => {
-  sendParams("aidevice001", {
+  sendParams(props.device_id, {
     function: "get_aitemp",
     parms: {},
   })
     .then((res: any) => {
-      if (res.status === "OK" && res.result.status === "ok") {
-        value.value = parseFloat(res.result.value).toFixed(1);
-        console.log("get_aitemp", res.result.value);
+      if (res.status === "OK" && res.data.status === "OK") {
+        value.value = parseFloat(res.data.value).toFixed(1);
+        console.log("get_aitemp", res.data.value);
       }
     })
     .catch((e) => {
