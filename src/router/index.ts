@@ -3,7 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 
 const routes = [
   {
-    path: '/',
+    path: '/display',
     name: 'Display',
     component:  () => import('@/components/Display/index.vue')
   },
@@ -11,6 +11,16 @@ const routes = [
     path: '/sensor',
     name: 'Sensor',
     component:  () => import('@/components/Sensor/index.vue')
+  },
+  {
+    path: '/Demonstrate',
+    name: 'Demonstrate',
+    component:  () => import('@/components/Demonstrate/index.vue')
+  },
+  {
+    path: '/',
+    name: 'Vant',
+    component:  () => import('@/components/Vant/index.vue')
   },
   // 添加更多路由...
 ];

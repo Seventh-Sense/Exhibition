@@ -1,11 +1,23 @@
 <template>
-  <n-config-provider :theme="darkTheme">
+  <n-config-provider
+    :theme="darkTheme"
+    :theme-overrides="themeOverrides"
+    :locale="zhCN"
+    :date-locale="dateZhCN"
+  >
     <router-view />
   </n-config-provider>
 </template>
 
 <script setup lang="ts">
-import { darkTheme } from "naive-ui";
+import { darkTheme, zhCN, dateZhCN } from "naive-ui";
+
+const themeOverrides = {
+  common: {
+    primaryColor: "#6666FF",
+    primaryColorHover: "#6666FF",
+  },
+};
 </script>
 
 <style scoped></style>

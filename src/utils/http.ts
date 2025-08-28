@@ -107,3 +107,13 @@ export const delMetric = async (id: string,) => {
     throw error
   }
 }
+
+export const getAllValue = async (id: string) => {
+  try {
+    const response = await get(`/points/latest?device_id=` + id)
+
+    return response
+  } catch (error) {
+    throw error
+  }
+}
