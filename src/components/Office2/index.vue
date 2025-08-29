@@ -97,7 +97,7 @@ const weatherTrans = (data: any) => {
   &-container {
     height: 100vh;
     //background-image: url("@/assets/Small3-banner2.gif");
-    background-image: url("@/assets/bg.png");
+    background-image: url("@/assets/floora.gif");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
