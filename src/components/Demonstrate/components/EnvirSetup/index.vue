@@ -7,7 +7,7 @@
     </div>
     <div class="card-item">
       <div class="card-item-title">环境湿度:</div>
-      <div class="card-item-data">{{ data.humidity }} ℃</div>
+      <div class="card-item-data">{{ data.humidity }} %RH</div>
     </div>
     <div class="card-item">
       <div class="card-item-title">最低温度:</div>

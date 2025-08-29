@@ -69,6 +69,7 @@ import {
   calculateTimeRange,
 } from "./untils/until";
 import { message } from "ant-design-vue";
+import bus from "../../utils/eventBus";
 
 const data = reactive<any>({
   environment: {
@@ -113,9 +114,16 @@ const history_data = ref<any>([])
 let interval: number;
 
 onMounted(() => {
+  //传值给office
+  sendData()
   //init data
   initData();
 });
+
+const sendData = () => {
+  bus.emit('environment', data.environment)
+  bus.emit('history_data', history_data.value)
+}
 
 // 创建设备和所有相关指标
 const createDeviceWithMetrics = async (): Promise<void> => {
@@ -161,6 +169,7 @@ const getPointsData = async (): Promise<void> => {
       });
 
       console.log("Metric Keys:", metricKeys);
+      //readData()
     } else {
       console.warn("Get metrics returned non-OK status:", res.data);
     }
@@ -336,7 +345,7 @@ const readData = async () => {
     }
 
     console.log("Read params success:", data); 
-
+    sendData()
   } catch (e) {
     console.error("Read params error:", e);
   }
